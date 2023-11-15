@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Medicine Information</title>
+    <style>
+      body {
+        background-color: #f2f2f2;
+        color: #333;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .container {
+        margin: 0 auto;
+        max-width: 800px;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 36px;
+        margin-bottom: 40px;
+        text-align: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      input[type="text"] {
+        border: none;
+        border-radius: 5px;
+        font-size: 20px;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type="submit"] {
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        cursor: pointer;
+        font-size: 20px;
+        padding: 10px;
+        transition: background-color 0.3s ease;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #555;
+      }
+
+      .info {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        padding: 20px;
+      }
+
+      .info h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .info p {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .info .disclaimer {
+        font-size: 16px;
+        margin-top: 20px;
+      }
+
+      .dark-mode body {
+        background-color: #333;
+        color: #fff;
+      }
+
+      .dark-mode h1,
+      .dark-mode label {
+        color: #fff;
+      }
+
+      .dark-mode input[type="text"] {
+        background-color: #fff;
+        color: #333;
+      }
+
+      .dark-mode input[type="submit"] {
+        background-color: #fff;
+        color: #333;
+      }
+
+      .dark-mode .info {
+        background-color: #333;
+        color: #fff;
+      }
+
+      .dark-mode .info h2,
+      .dark-mode .info p {
+        color: #fff;
+      }
+
+      .dark-mode .info .disclaimer {
+        color: #ccc;
+      }
+
+      .theme-switch {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        /* Adjusted for better placement */
+        margin-bottom: 20px;
+      }
+
+      .theme-switch input[type="checkbox"] {
+        height: 0;
+        width: 0;
+        visibility: hidden;
+      }
+
+      .theme-switch label {
+        cursor: pointer;
+        text-indent: -9999px;
+        width: 60px;
+        height: 30px;
+        background: grey;
+        display: block;
+        border-radius: 30px;
+        position: relative;
+      }
+
+      .theme-switch label:after {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 26px;
+        height: 26px;
+        background: #fff;
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+
+      .theme-switch input[type="checkbox"]:checked+label {
+        background: #27ae60;
+      }
+
+      .theme-switch input[type="checkbox"]:checked+label:after {
+        left: calc(100% - 2px);
+        transform: translateX(-100%);
+      }
+
+      /* Table styles */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+      }
+
+      th {
+        background-color: #333;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      /* Dark mode table styles */
+      .dark-mode table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+        color: #fff;
+      }
+
+      .dark-mode th,
+      .dark-mode td {
+        text-align: left;
+        padding: 8px;
+      }
+
+      .dark-mode th {
+        background-color: #fff;
+        color: #333;
+      }
+
+      .dark-mode tr:nth-child(even) {
+        background-color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="theme-switch">
+        <input type="checkbox" id="toggle" name="theme" class="theme-switch__input">
+        <label for="toggle" class="theme-switch__label" title="Toggle Dark Mode"><span></span></label>
+      </div>
+      <h1>Medicine Information</h1>
+      <form method="POST">
+        <label for="medicine_name">Enter Medicine Name:</label>
+        <input type="text" id="medicine_name" name="medicine_name" required {% if medicine_info %}
+          value="{{ medicine_name }}" {% endif %}>
+        <input type="submit" value="Get Info">
+      </form>
+      {% if medicine_info %}
+      <div class="info">
+        <h2>Medicine Information of: "{{ medicine_name }}"</h2>
+        <p>
+          {{ medicine_info|safe }}
+        </p>
+        <p class="disclaimer">
+          <strong>Disclaimer:</strong>
+          This information is AI-generated and should not replace professional medical advice.
+        </p>
+      </div>
+      {% endif %}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+        // Check the user's theme preference and set it
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+          document.documentElement.setAttribute('data-theme', currentTheme);
+          if (currentTheme === 'dark') {
+            toggleSwitch.checked = true;
+            document.documentElement.classList.add('dark-mode');
+          }
+        }
+
+        function switchTheme(e) {
+          if (e.target.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            document.documentElement.classList.add('dark-mode');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            document.documentElement.classList.remove('dark-mode');
+          }
+        }
+
+        toggleSwitch.addEventListener('change', switchTheme, false);
+      });
+    </script>
+  </body>
+
+</html>
