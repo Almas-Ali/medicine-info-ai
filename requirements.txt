@@ -1,0 +1,4 @@
+flask==3.0.0
+envist==0.0.3
+openai==1.2.4
+mtranslate==1.8.0
